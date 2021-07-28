@@ -9,13 +9,17 @@ std::shared_ptr<CVarManagerWrapper> _globalCvarManager;
 int backWall = 5015;
 bool blueEnabled = false;
 bool orangeEnabled = false;
-//bool allowedRender = false;
 
 int goalWidth = 1786;
 int goalHeight = 642;
 int backWallLength = 5888;
 //int topBackWall = 2030;
 int topBackWall = 1000;
+
+bool renderEnabled = false;
+int numSlices = 10;
+int width = 4;
+LinearColor color;
 
 Vector goalLocBlue;
 Vector goalLocOrange;
@@ -37,6 +41,21 @@ void MovedGoals::onLoad()
             backWall = cvar.getIntValue();
             });
 
+    cvarManager->registerCvar("moved_goals_num_slices", std::to_string(numSlices), "number of slices")
+        .addOnValueChanged([this](std::string, CVarWrapper cvar) {
+            numSlices = cvar.getIntValue();
+            });
+
+    cvarManager->registerCvar("moved_goals_line_width", std::to_string(width), "line width")
+        .addOnValueChanged([this](std::string, CVarWrapper cvar) {
+            width = cvar.getIntValue();
+            });
+
+    cvarManager->registerCvar("moved_goals_line_color", "#000000FF", "line color")
+        .addOnValueChanged([this](std::string, CVarWrapper cvar) {
+            color = cvar.getColorValue();
+            });
+
     cvarManager->registerCvar("moved_goals_blue", "0", "makes the blue team have random goal location", true, true, 0, true, 1)
         .addOnValueChanged([this](std::string, CVarWrapper cvar) { 
             if (gameWrapper->IsInOnlineGame()) { return; }
@@ -51,7 +70,7 @@ void MovedGoals::onLoad()
             Netcode->SendNewMessage("oenable" + cvar.getStringValue());
         });
 
-    gameWrapper->HookEventPost("Function TAGame.GameEvent_TA.AddCar",
+    gameWrapper->HookEventPost("Function GameEvent_Soccar_TA.Countdown.BeginState",
         [this](...) {
             if (gameWrapper->IsInOnlineGame()) { return; }
             Vector newGoalBlue = generateGoalLocation();
@@ -322,9 +341,6 @@ void MovedGoals::render(CanvasWrapper canvas) {
     CameraWrapper camera = gameWrapper->GetCamera();
     if (camera.IsNull()) return;
 
-    int width = 4;
-    int numSlices = 10;
-
     auto camLoc = camera.GetLocation();
     RT::Frustum frust{ canvas, camera };
 
@@ -338,55 +354,63 @@ void MovedGoals::render(CanvasWrapper canvas) {
     Vector blueBotLeft(blueLeft, -backWall, blueBot);
     Vector blueBotRight(blueRight, -backWall, blueBot);
 
-    RT::Line blueLineTop(blueTopLeft, blueTopRight, RT::GetVisualDistance(canvas, frust, camera, blueTopLeft) * width);
-    blueLineTop.DrawWithinFrustum(canvas, frust);
-    RT::Line blueLineRight(blueTopRight, blueBotRight, RT::GetVisualDistance(canvas, frust, camera, blueTopRight) * width);
-    blueLineRight.DrawWithinFrustum(canvas, frust);
-    RT::Line blueLineBot(blueBotRight, blueBotLeft, RT::GetVisualDistance(canvas, frust, camera, blueBotRight) * width);
-    blueLineBot.DrawWithinFrustum(canvas, frust);
-    RT::Line blueLineLeft(blueBotLeft, blueTopLeft, RT::GetVisualDistance(canvas, frust, camera, blueBotLeft) * width);
-    blueLineLeft.DrawWithinFrustum(canvas, frust);
-    
-    float blueSliceSpace = (blueTop - blueBot) / numSlices;
-    float blueSliceZ = blueBot + blueSliceSpace;
-    for (int i = 0; i < numSlices - 2; i++) {
-        Vector blueSliceLeft(blueLeft, -backWall, blueSliceZ);
-        Vector blueSliceRight(blueRight, -backWall, blueSliceZ);
+    canvas.SetColor(color);
 
-        RT::Line blueSlice(blueSliceLeft, blueSliceRight, RT::GetVisualDistance(canvas, frust, camera, blueSliceLeft) * width);
-        blueSlice.DrawWithinFrustum(canvas, frust);
+    if (orangeEnabled) {
 
-        blueSliceZ += blueSliceSpace;
+        RT::Line blueLineTop(blueTopLeft, blueTopRight, RT::GetVisualDistance(canvas, frust, camera, blueTopLeft) * width);
+        blueLineTop.DrawWithinFrustum(canvas, frust);
+        RT::Line blueLineRight(blueTopRight, blueBotRight, RT::GetVisualDistance(canvas, frust, camera, blueTopRight) * width);
+        blueLineRight.DrawWithinFrustum(canvas, frust);
+        RT::Line blueLineBot(blueBotRight, blueBotLeft, RT::GetVisualDistance(canvas, frust, camera, blueBotRight) * width);
+        blueLineBot.DrawWithinFrustum(canvas, frust);
+        RT::Line blueLineLeft(blueBotLeft, blueTopLeft, RT::GetVisualDistance(canvas, frust, camera, blueBotLeft) * width);
+        blueLineLeft.DrawWithinFrustum(canvas, frust);
+
+        float blueSliceSpace = (blueTop - blueBot) / numSlices;
+        float blueSliceZ = blueBot + blueSliceSpace;
+        for (int i = 0; i < numSlices - 1; i++) {
+            Vector blueSliceLeft(blueLeft, -backWall, blueSliceZ);
+            Vector blueSliceRight(blueRight, -backWall, blueSliceZ);
+
+            RT::Line blueSlice(blueSliceLeft, blueSliceRight, RT::GetVisualDistance(canvas, frust, camera, blueSliceLeft) * width);
+            blueSlice.DrawWithinFrustum(canvas, frust);
+
+            blueSliceZ += blueSliceSpace;
+        }
     }
 
-    float orangeLeft = goalLocOrange.X - (goalWidth / 2);
-    float orangeRight = goalLocOrange.X + (goalWidth / 2);
-    float orangeTop = goalLocOrange.Z + (goalHeight / 2);
-    float orangeBot = goalLocOrange.Z - (goalHeight / 2);
+    if (blueEnabled) {
 
-    Vector orangeTopLeft(orangeLeft, backWall, orangeTop);
-    Vector orangeTopRight(orangeRight, backWall, orangeTop);
-    Vector orangeBotLeft(orangeLeft, backWall, orangeBot);
-    Vector orangeBotRight(orangeRight, backWall, orangeBot);
+        float orangeLeft = goalLocOrange.X - (goalWidth / 2);
+        float orangeRight = goalLocOrange.X + (goalWidth / 2);
+        float orangeTop = goalLocOrange.Z + (goalHeight / 2);
+        float orangeBot = goalLocOrange.Z - (goalHeight / 2);
 
-    RT::Line orangeLineTop(orangeTopLeft, orangeTopRight, RT::GetVisualDistance(canvas, frust, camera, orangeTopLeft) * width);
-    orangeLineTop.DrawWithinFrustum(canvas, frust);
-    RT::Line orangeLineRight(orangeTopRight, orangeBotRight, RT::GetVisualDistance(canvas, frust, camera, orangeTopRight) * width);
-    orangeLineRight.DrawWithinFrustum(canvas, frust);
-    RT::Line orangeLineBot(orangeBotRight, orangeBotLeft, RT::GetVisualDistance(canvas, frust, camera, orangeBotRight) * width);
-    orangeLineBot.DrawWithinFrustum(canvas, frust);
-    RT::Line orangeLineLeft(orangeBotLeft, orangeTopLeft, RT::GetVisualDistance(canvas, frust, camera, orangeBotLeft) * width);
-    orangeLineLeft.DrawWithinFrustum(canvas, frust);
+        Vector orangeTopLeft(orangeLeft, backWall, orangeTop);
+        Vector orangeTopRight(orangeRight, backWall, orangeTop);
+        Vector orangeBotLeft(orangeLeft, backWall, orangeBot);
+        Vector orangeBotRight(orangeRight, backWall, orangeBot);
 
-    float orangeSliceSpace = (orangeTop - orangeBot) / numSlices;
-    float orangeSliceZ = orangeBot + orangeSliceSpace;
-    for (int i = 0; i < numSlices - 2; i++) {
-        Vector orangeSliceLeft(orangeLeft, backWall, orangeSliceZ);
-        Vector orangeSliceRight(orangeRight, backWall, orangeSliceZ);
+        RT::Line orangeLineTop(orangeTopLeft, orangeTopRight, RT::GetVisualDistance(canvas, frust, camera, orangeTopLeft) * width);
+        orangeLineTop.DrawWithinFrustum(canvas, frust);
+        RT::Line orangeLineRight(orangeTopRight, orangeBotRight, RT::GetVisualDistance(canvas, frust, camera, orangeTopRight) * width);
+        orangeLineRight.DrawWithinFrustum(canvas, frust);
+        RT::Line orangeLineBot(orangeBotRight, orangeBotLeft, RT::GetVisualDistance(canvas, frust, camera, orangeBotRight) * width);
+        orangeLineBot.DrawWithinFrustum(canvas, frust);
+        RT::Line orangeLineLeft(orangeBotLeft, orangeTopLeft, RT::GetVisualDistance(canvas, frust, camera, orangeBotLeft) * width);
+        orangeLineLeft.DrawWithinFrustum(canvas, frust);
 
-        RT::Line orangeSlice(orangeSliceLeft, orangeSliceRight, RT::GetVisualDistance(canvas, frust, camera, orangeSliceLeft) * width);
-        orangeSlice.DrawWithinFrustum(canvas, frust);
+        float orangeSliceSpace = (orangeTop - orangeBot) / numSlices;
+        float orangeSliceZ = orangeBot + orangeSliceSpace;
+        for (int i = 0; i < numSlices - 1; i++) {
+            Vector orangeSliceLeft(orangeLeft, backWall, orangeSliceZ);
+            Vector orangeSliceRight(orangeRight, backWall, orangeSliceZ);
 
-        orangeSliceZ += orangeSliceSpace;
+            RT::Line orangeSlice(orangeSliceLeft, orangeSliceRight, RT::GetVisualDistance(canvas, frust, camera, orangeSliceLeft) * width);
+            orangeSlice.DrawWithinFrustum(canvas, frust);
+
+            orangeSliceZ += orangeSliceSpace;
+        }
     }
 }

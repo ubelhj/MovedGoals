@@ -10,11 +10,84 @@ void MovedGoals::SetImGuiContext(uintptr_t ctx) {
 }
 
 void MovedGoals::RenderSettings() {
-    ImGui::Columns(2);
-    ImGui::TextUnformatted("Blue team settings");
-    ImGui::NextColumn();
-    ImGui::TextUnformatted("Orange team settings");
-    ImGui::Columns(1);
+
+    
+
+
+    CVarWrapper enableBlueCvar = cvarManager->getCvar("moved_goals_blue");
+
+    if (!enableBlueCvar) {
+        return;
+    }
+
+    bool enabledBlue = enableBlueCvar.getBoolValue();
+
+    if (ImGui::Checkbox("Move orange's goal", &enabledBlue)) {
+        gameWrapper->Execute([enableBlueCvar, enabledBlue](...) mutable {
+            enableBlueCvar.setValue(enabledBlue);
+            });
+    }
+
+    ImGui::SameLine();
+
+    CVarWrapper enableOrangeCvar = cvarManager->getCvar("moved_goals_orange");
+
+    if (!enableOrangeCvar) {
+        return;
+    }
+
+    bool enabledOrange = enableOrangeCvar.getBoolValue();
+
+    if (ImGui::Checkbox("Move blue's goal", &enabledOrange)) {
+        gameWrapper->Execute([enableOrangeCvar, enabledOrange](...) mutable {
+            enableOrangeCvar.setValue(enabledOrange);
+            });
+    }
+
+    CVarWrapper sliceColorVar = cvarManager->getCvar("moved_goals_line_color");
+
+    if (!sliceColorVar) {
+        return;
+    }
+
+    float sliceColors[4];
+
+    LinearColor sliceColor = sliceColorVar.getColorValue();
+
+    ImVec4 colorVec;
+
+    sliceColors[0] = sliceColor.R / 255;
+    sliceColors[1] = sliceColor.G / 255;
+    sliceColors[2] = sliceColor.B / 255;
+    sliceColors[3] = sliceColor.A / 255;
+
+    colorVec.x = sliceColor.R / 255;
+    colorVec.y = sliceColor.G / 255;
+    colorVec.z = sliceColor.B / 255;
+    colorVec.w = sliceColor.A / 255;
+    if (ImGui::ColorButton("Line Color##button", colorVec)) {
+        ImGui::OpenPopup("Line Color selector");
+    }
+
+    ImGui::SameLine();
+
+    ImGui::Text("Line Color");
+
+    if (ImGui::BeginPopup("Line Color selector")) {
+        if (ImGui::ColorPicker4("Line Color##selector", sliceColors)) {
+            sliceColor.R = sliceColors[0] * 255;
+            sliceColor.G = sliceColors[1] * 255;
+            sliceColor.B = sliceColors[2] * 255;
+            sliceColor.A = sliceColors[3] * 255;
+            sliceColorVar.setValue(sliceColor);
+        }
+
+        ImGui::EndPopup();
+    }
+
+    ImGui::Separator();
+
+
 
     /*CVarWrapper distanceCvar = cvarManager->getCvar("moved_goals_back");
     if (!distanceCvar) { return; }
@@ -27,43 +100,6 @@ void MovedGoals::RenderSettings() {
         std::string hoverText = "distance is " + std::to_string(distance);
         ImGui::SetTooltip(hoverText.c_str());
     }*/
-
-    ImGui::Separator();
-    ImGui::Columns(2);
-
-    CVarWrapper enableBlueCvar = cvarManager->getCvar("moved_goals_blue");
-
-    if (!enableBlueCvar) {
-        return;
-    }
-
-    bool enabledBlue = enableBlueCvar.getBoolValue();
-
-    if (ImGui::Checkbox("Enable for blue", &enabledBlue)) {
-        gameWrapper->Execute([enableBlueCvar, enabledBlue](...) mutable {
-            enableBlueCvar.setValue(enabledBlue);
-            });
-    }
-
-    ImGui::NextColumn();
-
-    CVarWrapper enableOrangeCvar = cvarManager->getCvar("moved_goals_orange");
-
-    if (!enableOrangeCvar) {
-        return;
-    }
-
-    bool enabledOrange = enableOrangeCvar.getBoolValue();
-
-    if (ImGui::Checkbox("Enable for orange", &enabledOrange)) {
-        gameWrapper->Execute([enableOrangeCvar, enabledOrange](...) mutable {
-            enableOrangeCvar.setValue(enabledOrange);
-            });
-    }
-
-    ImGui::Columns(1);
-
-    ImGui::Separator();
 
     ImGui::TextUnformatted("Plugin commissioned by Striped");
     ImGui::TextUnformatted("youtube.com/c/Striped");
