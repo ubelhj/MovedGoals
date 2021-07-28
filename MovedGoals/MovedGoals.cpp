@@ -13,8 +13,7 @@ bool orangeEnabled = false;
 int goalWidth = 1786;
 int goalHeight = 642;
 int backWallLength = 5888;
-//int topBackWall = 2030;
-int topBackWall = 1000;
+int topBackWall = 2030;
 
 bool renderEnabled = false;
 int numSlices = 10;
