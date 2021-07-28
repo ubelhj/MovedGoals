@@ -6,7 +6,7 @@ BAKKESMOD_PLUGIN(MovedGoals, "write a plugin description here", plugin_version, 
 
 std::shared_ptr<CVarManagerWrapper> _globalCvarManager;
 
-int backWall = 5030;
+int backWall = 5015;
 bool blueEnabled = false;
 bool orangeEnabled = false;
 
@@ -106,6 +106,7 @@ ServerWrapper MovedGoals::GetCurrentGameState() {
 // FULFILL REQUEST //
 void MovedGoals::OnMessageReceived(const std::string& Message, PriWrapper Sender)
 {
+	cvarManager->log("message received");
     if(Sender.IsNull()) { return; }
 
 	ServerWrapper sw = GetCurrentGameState();
@@ -173,7 +174,7 @@ void MovedGoals::OnMessageReceived(const std::string& Message, PriWrapper Sender
 			return;
 		}
 
-		std::string zValString = updateType.substr(zLoc + 1);
+		std::string zValString = updateType.substr(((size_t)zLoc) + 1);
 		int zValue;
 
 		try {
@@ -219,16 +220,20 @@ void MovedGoals::onTick(CarWrapper caller) {
 	//  5028
 	if (ballLoc.Y > backWall && velocity.Y > 0) {
 		// ball is going in orange net
-		cvarManager->log("shot taken at orange wall");
+		cvarManager->log("shot taken at orange wall: x " + std::to_string(ballLoc.X) + ", z " + std::to_string(ballLoc.Z));
+		cvarManager->log("orange goal: x " + std::to_string(goalLocOrange.X) + ", z " + std::to_string(goalLocOrange.Z));
 		if (!blueEnabled) {
 			return;
 		}
 
 		if (isWithin(goalLocOrange, ballLoc)) {
+			cvarManager->log("within goal");
+
 			if (!gameWrapper->IsInOnlineGame()) {
 				auto teams = sw.GetTeams();
-
 				teams.Get(0).ScorePoint(1);
+
+				sw.StartNewRound();
 				return;
 			}
 		}
@@ -238,26 +243,20 @@ void MovedGoals::onTick(CarWrapper caller) {
 	}
 	else if (ballLoc.Y < -backWall && velocity.Y < 0) {
 		// ball is going in blue net
-		cvarManager->log("shot taken at blue wall");
+		cvarManager->log("shot taken at blue wall: x " + std::to_string(ballLoc.X) + ", z " + std::to_string(ballLoc.Z));
+		cvarManager->log("blue goal: x " + std::to_string(goalLocBlue.X) + ", z " + std::to_string(goalLocBlue.Z));
 		if (!orangeEnabled) {
 			return;
 		}
 
 		if (isWithin(goalLocBlue, ballLoc)) {
+			cvarManager->log("within goal");
 			if (!gameWrapper->IsInOnlineGame()) {
 				auto teams = sw.GetTeams();
+				teams.Get(1).ScorePoint(1);
 
-				teams.Get(0).ScorePoint(1);
+				sw.StartNewRound();
 				return;
-				/*
-				GoalWrapper blueGoal = goals.Get(0);
-
-				if (!blueGoal) {
-					return;
-				}
-
-				ball.EventHitGoal(ball, blueGoal);
-				return;*/
 			}
 		}
 
