@@ -25,6 +25,9 @@
     <Filter Include="NetcodeManager">
       <UniqueIdentifier>{be471269-a032-488b-8dd3-f4f4f2a1a3ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="RenderingTools">
+      <UniqueIdentifier>{d2733583-3896-40de-a479-e1e0b9307001}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MovedGoals.cpp">
@@ -78,6 +81,60 @@
     <ClCompile Include="NetcodeManager\NetcodeManager.cpp">
       <Filter>NetcodeManager</Filter>
     </ClCompile>
+    <ClCompile Include="RenderingTools\Extra\CanvasExtensions.cpp">
+      <Filter>RenderingTools</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingTools\Extra\RenderingAssistant.cpp">
+      <Filter>RenderingTools</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingTools\Extra\RenderingMath.cpp">
+      <Filter>RenderingTools</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingTools\Extra\WrapperStructsExtensions.cpp">
+      <Filter>RenderingTools</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingTools\Objects\Chevron.cpp">
+      <Filter>RenderingTools</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingTools\Objects\Circle.cpp">
+      <Filter>RenderingTools</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingTools\Objects\Circle2D.cpp">
+      <Filter>RenderingTools</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingTools\Objects\Cone.cpp">
+      <Filter>RenderingTools</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingTools\Objects\Cube.cpp">
+      <Filter>RenderingTools</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingTools\Objects\Cylinder.cpp">
+      <Filter>RenderingTools</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingTools\Objects\Frustum.cpp">
+      <Filter>RenderingTools</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingTools\Objects\Grid.cpp">
+      <Filter>RenderingTools</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingTools\Objects\Line.cpp">
+      <Filter>RenderingTools</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingTools\Objects\Matrix3.cpp">
+      <Filter>RenderingTools</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingTools\Objects\Plane.cpp">
+      <Filter>RenderingTools</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingTools\Objects\Sphere.cpp">
+      <Filter>RenderingTools</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingTools\Objects\Triangle.cpp">
+      <Filter>RenderingTools</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingTools\Objects\VisualCamera.cpp">
+      <Filter>RenderingTools</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MovedGoals.h">
@@ -130,6 +187,63 @@
     </ClInclude>
     <ClInclude Include="NetcodeManager\NetcodeManager.h">
       <Filter>NetcodeManager</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingTools\Extra\CanvasExtensions.h">
+      <Filter>RenderingTools</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingTools\Extra\RenderingAssistant.h">
+      <Filter>RenderingTools</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingTools\Extra\RenderingMath.h">
+      <Filter>RenderingTools</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingTools\Extra\WrapperStructsExtensions.h">
+      <Filter>RenderingTools</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingTools\Objects\Chevron.h">
+      <Filter>RenderingTools</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingTools\Objects\Circle.h">
+      <Filter>RenderingTools</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingTools\Objects\Circle2D.h">
+      <Filter>RenderingTools</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingTools\Objects\Cone.h">
+      <Filter>RenderingTools</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingTools\Objects\Cube.h">
+      <Filter>RenderingTools</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingTools\Objects\Cylinder.h">
+      <Filter>RenderingTools</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingTools\Objects\Frustum.h">
+      <Filter>RenderingTools</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingTools\Objects\Grid.h">
+      <Filter>RenderingTools</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingTools\Objects\Line.h">
+      <Filter>RenderingTools</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingTools\Objects\Matrix3.h">
+      <Filter>RenderingTools</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingTools\Objects\Plane.h">
+      <Filter>RenderingTools</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingTools\Objects\Sphere.h">
+      <Filter>RenderingTools</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingTools\Objects\Triangle.h">
+      <Filter>RenderingTools</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingTools\Objects\VisualCamera.h">
+      <Filter>RenderingTools</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderingTools\RenderingTools.h">
+      <Filter>RenderingTools</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

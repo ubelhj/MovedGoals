@@ -3,6 +3,7 @@
 #include "bakkesmod/plugin/bakkesmodplugin.h"
 #include "bakkesmod/plugin/pluginwindow.h"
 #include "bakkesmod/plugin/PluginSettingsWindow.h"
+#include "RenderingTools/RenderingTools.h"
 
 #include "NetcodeManager/NetcodeManager.h"
 
@@ -36,6 +37,8 @@ public:
 
 	Vector generateGoalLocation();
 	bool isWithin(Vector goalLoc, Vector ballLoc);
+
+	void render(CanvasWrapper canvas);
 
 	// Inherited via PluginWindow
 	/*
