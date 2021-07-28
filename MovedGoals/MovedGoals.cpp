@@ -138,7 +138,7 @@ void MovedGoals::OnMessageReceived(const std::string& Message, PriWrapper Sender
     }
 
     // Do your netcode here
-    cvarManager->log(Message);
+    //cvarManager->log(Message);
 
     if (Message.length() < 1) {
         return;
@@ -241,8 +241,8 @@ void MovedGoals::onTick(CarWrapper caller) {
     //  5028
     if (ballLoc.Y > backWall && velocity.Y > 0) {
         // ball is going in orange net
-        cvarManager->log("shot taken at orange wall: x " + std::to_string(ballLoc.X) + ", z " + std::to_string(ballLoc.Z));
-        cvarManager->log("orange goal: x " + std::to_string(goalLocOrange.X) + ", z " + std::to_string(goalLocOrange.Z));
+        //cvarManager->log("shot taken at orange wall: x " + std::to_string(ballLoc.X) + ", z " + std::to_string(ballLoc.Z));
+        //cvarManager->log("orange goal: x " + std::to_string(goalLocOrange.X) + ", z " + std::to_string(goalLocOrange.Z));
         if (!blueEnabled) {
             return;
         }
@@ -271,8 +271,8 @@ void MovedGoals::onTick(CarWrapper caller) {
     }
     else if (ballLoc.Y < -backWall && velocity.Y < 0) {
         // ball is going in blue net
-        cvarManager->log("shot taken at blue wall: x " + std::to_string(ballLoc.X) + ", z " + std::to_string(ballLoc.Z));
-        cvarManager->log("blue goal: x " + std::to_string(goalLocBlue.X) + ", z " + std::to_string(goalLocBlue.Z));
+        //cvarManager->log("shot taken at blue wall: x " + std::to_string(ballLoc.X) + ", z " + std::to_string(ballLoc.Z));
+        //cvarManager->log("blue goal: x " + std::to_string(goalLocBlue.X) + ", z " + std::to_string(goalLocBlue.Z));
         if (!orangeEnabled) {
             return;
         }
@@ -315,7 +315,7 @@ Vector MovedGoals::generateGoalLocation() {
 
     int zVal = distZ(*RandomDevice.get());
 
-    cvarManager->log("new goal: " + std::to_string(xVal) + ", " + std::to_string(zVal));
+    //cvarManager->log("new goal: " + std::to_string(xVal) + ", " + std::to_string(zVal));
 
     return Vector(xVal, backWall, zVal);
 }
