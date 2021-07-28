@@ -230,10 +230,22 @@ void MovedGoals::onTick(CarWrapper caller) {
 			cvarManager->log("within goal");
 
 			if (!gameWrapper->IsInOnlineGame()) {
-				auto teams = sw.GetTeams();
+				auto goals = sw.GetGoals();
+
+				GoalWrapper goal = goals.Get(1);
+
+				if (!goal) {
+					return;
+				}
+
+				Vector explosionLoc(0, 0, 0);
+
+				ball.eventOnHitGoal(goal, explosionLoc);
+
+				/*auto teams = sw.GetTeams();
 				teams.Get(0).ScorePoint(1);
 
-				sw.StartNewRound();
+				sw.StartNewRound();*/
 				return;
 			}
 		}
@@ -252,10 +264,21 @@ void MovedGoals::onTick(CarWrapper caller) {
 		if (isWithin(goalLocBlue, ballLoc)) {
 			cvarManager->log("within goal");
 			if (!gameWrapper->IsInOnlineGame()) {
-				auto teams = sw.GetTeams();
+				auto goals = sw.GetGoals();
+
+				GoalWrapper goal = goals.Get(0);
+
+				if (!goal) {
+					return;
+				}
+
+				Vector explosionLoc(0, 0, 0);
+
+				ball.eventOnHitGoal(goal, explosionLoc);
+				/*auto teams = sw.GetTeams();
 				teams.Get(1).ScorePoint(1);
 
-				sw.StartNewRound();
+				sw.StartNewRound();*/
 				return;
 			}
 		}
