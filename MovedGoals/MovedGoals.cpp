@@ -40,6 +40,11 @@ void MovedGoals::onLoad()
             backWall = cvar.getIntValue();
             });
 
+    cvarManager->registerCvar("moved_goals_render", std::to_string(renderEnabled), "whether to display the goal's new location")
+        .addOnValueChanged([this](std::string, CVarWrapper cvar) {
+            renderEnabled = cvar.getBoolValue();
+            });
+
     cvarManager->registerCvar("moved_goals_num_slices", std::to_string(numSlices), "number of slices")
         .addOnValueChanged([this](std::string, CVarWrapper cvar) {
             numSlices = cvar.getIntValue();
@@ -331,6 +336,10 @@ bool MovedGoals::isWithin(Vector goalLoc, Vector ballLoc) {
 }
 
 void MovedGoals::render(CanvasWrapper canvas) {
+    if (!renderEnabled) {
+        return;
+    }
+
     ServerWrapper sw = GetCurrentGameState();
 
     if (!sw) {

@@ -10,10 +10,6 @@ void MovedGoals::SetImGuiContext(uintptr_t ctx) {
 }
 
 void MovedGoals::RenderSettings() {
-
-    
-
-
     CVarWrapper enableBlueCvar = cvarManager->getCvar("moved_goals_blue");
 
     if (!enableBlueCvar) {
@@ -42,6 +38,20 @@ void MovedGoals::RenderSettings() {
         gameWrapper->Execute([enableOrangeCvar, enabledOrange](...) mutable {
             enableOrangeCvar.setValue(enabledOrange);
             });
+    }
+
+    CVarWrapper enableRenderCvar = cvarManager->getCvar("moved_goals_render");
+
+    if (!enableRenderCvar) {
+        return;
+    }
+
+    bool enabledRender = enableRenderCvar.getBoolValue();
+
+    if (ImGui::Checkbox("Show new goals", &enabledRender)) {
+        //gameWrapper->Execute([enableRenderCvar, enabledRender](...) mutable {
+            enableRenderCvar.setValue(enabledRender);
+            //});
     }
 
     CVarWrapper sliceColorVar = cvarManager->getCvar("moved_goals_line_color");
